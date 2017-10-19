@@ -1,4 +1,4 @@
-# for 3.8 for c++17 support
+# cmake 3.8 for c++17 support
 cmake_minimum_required(VERSION 3.8)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
