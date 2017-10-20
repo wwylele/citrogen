@@ -1,5 +1,5 @@
 #include "core/sha.h"
-#include <crypto++/sha.h>
+#include <cryptopp/sha.h>
 
 namespace CB {
 

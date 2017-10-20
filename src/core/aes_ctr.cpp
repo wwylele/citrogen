@@ -1,6 +1,6 @@
 #include "core/aes_ctr.h"
-#include <crypto++/aes.h>
-#include <crypto++/modes.h>
+#include <cryptopp/aes.h>
+#include <cryptopp/modes.h>
 #include <cstdio>
 namespace FB {
 

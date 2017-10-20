@@ -77,7 +77,6 @@ set_property(DIRECTORY APPEND PROPERTY
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Crypto++ REQUIRED)
 
 # Platform-specific library requirements
 # ======================================
@@ -117,4 +116,5 @@ function(create_directory_groups)
     endforeach()
 endfunction()
 
+add_subdirectory(externals)
 add_subdirectory(src)

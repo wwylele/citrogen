@@ -1,6 +1,8 @@
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake-modules)
+
 set(SRCS
         cia_session.cpp
         cia_session.h
@@ -54,3 +56,7 @@ target_link_libraries(citrogen PRIVATE core)
 target_link_libraries(citrogen PRIVATE Qt5::Widgets)
 target_link_libraries(citrogen PRIVATE ${PLATFORM_LIBRARIES} Threads::Threads)
 
+if (MSVC)
+    include(CopyQt5Deps)
+    copy_Qt5_deps(citrogen)
+endif()

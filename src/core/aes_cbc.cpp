@@ -1,7 +1,7 @@
 #include "core/aes_cbc.h"
 #include "core/align.h"
-#include <crypto++/aes.h>
-#include <crypto++/modes.h>
+#include <cryptopp/aes.h>
+#include <cryptopp/modes.h>
 
 namespace FB {
 

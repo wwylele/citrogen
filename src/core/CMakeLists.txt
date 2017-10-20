@@ -44,3 +44,4 @@ create_directory_groups(${SRCS})
 add_library(core STATIC ${SRCS})
 target_link_libraries(core PRIVATE cryptopp)
 target_link_libraries(core PRIVATE ${PLATFORM_LIBRARIES} Threads::Threads)
+

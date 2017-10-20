@@ -1,5 +1,5 @@
 #include "core/rsa.h"
-#include <crypto++/rsa.h>
+#include <cryptopp/rsa.h>
 
 namespace CB {
 
