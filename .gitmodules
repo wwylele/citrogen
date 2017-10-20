@@ -1,0 +1,4 @@
+[submodule "externals/cryptopp/cryptopp"]
+	path = externals/cryptopp/cryptopp
+	url = https://github.com/weidai11/cryptopp.git
+	branch = CRYPTOPP_5_6_3-1923-g24bc2b8

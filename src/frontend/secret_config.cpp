@@ -5,37 +5,42 @@
 #include "ui_secret_config.h"
 #include <QMenu>
 
-std::unordered_map<std::string, QString> SecretConfigDialog::secret_desc{
-    {SB::k_sec_key2C_x,
-     tr("The primary encryption key for NCCH. All encrypted NCCH files, except "
-        "for ones using fixed-key crypto, need this key to decrypt.")},
-    {SB::k_sec_key25_x,
-     tr("The secondary encryption key for 7.x (Secure 2) NCCH. Many encrypted "
-        "NCCH files need this key to decrypt.")},
-    {SB::k_sec_key18_x,
-     tr("The secondary encryption key for Secure 3 NCCH. Some encrypted NCCH "
-        "files need this key to decrypt.")},
-    {SB::k_sec_key1B_x,
-     tr("The secondary encryption key for Secure 4 NCCH. Some encrypted NCCH "
-        "files need this key to decrypt.")},
-    {SB::k_sec_key3D_x, tr("The primary key for decrypting ticket title key.")},
-    {SB::k_sec_key3D_y[0], tr("The secondary key for decrypting ticket title "
-                              "key used for eshop applications.")},
-    {SB::k_sec_key3D_y[1], tr("The secondary key for decrypting ticket title "
-                              "key used for system applications.")},
-    {SB::k_sec_aes_const, tr("The core secret constant of AES key scrambler "
-                             "engine. Needed for most AES encryption.")},
-    {SB::k_sec_pubkey_exheader,
-     tr("The public key needed for verifying ExHeader signature.")},
-    {SB::k_sec_pubkey_ncsd_cfa,
-     tr("The public key needed for verifying NCSD and CFA signature.")},
-};
+std::unordered_map<std::string, QString> SecretConfigDialog::secret_desc;
 
 SecretConfigDialog::SecretConfigDialog(
     std::shared_ptr<SB::SecretDatabase> secrets_, QWidget *parent)
     : QDialog(parent), secrets(std::move(secrets_)),
       ui(new Ui::SecretConfigDialog) {
   ui->setupUi(this);
+
+  // HACK
+  secret_desc = {
+      {SB::k_sec_key2C_x,
+       tr("The primary encryption key for NCCH. All encrypted NCCH files, "
+          "except "
+          "for ones using fixed-key crypto, need this key to decrypt.")},
+      {SB::k_sec_key25_x, tr("The secondary encryption key for 7.x (Secure 2) "
+                             "NCCH. Many encrypted "
+                             "NCCH files need this key to decrypt.")},
+      {SB::k_sec_key18_x,
+       tr("The secondary encryption key for Secure 3 NCCH. Some encrypted NCCH "
+          "files need this key to decrypt.")},
+      {SB::k_sec_key1B_x,
+       tr("The secondary encryption key for Secure 4 NCCH. Some encrypted NCCH "
+          "files need this key to decrypt.")},
+      {SB::k_sec_key3D_x,
+       tr("The primary key for decrypting ticket title key.")},
+      {SB::k_sec_key3D_y[0], tr("The secondary key for decrypting ticket title "
+                                "key used for eshop applications.")},
+      {SB::k_sec_key3D_y[1], tr("The secondary key for decrypting ticket title "
+                                "key used for system applications.")},
+      {SB::k_sec_aes_const, tr("The core secret constant of AES key scrambler "
+                               "engine. Needed for most AES encryption.")},
+      {SB::k_sec_pubkey_exheader,
+       tr("The public key needed for verifying ExHeader signature.")},
+      {SB::k_sec_pubkey_ncsd_cfa,
+       tr("The public key needed for verifying NCSD and CFA signature.")},
+  };
 
   QMenu *menu = new QMenu();
   connect(menu->addAction(tr("Manual Input...")), &QAction::triggered, this,
