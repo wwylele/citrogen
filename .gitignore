@@ -16,6 +16,10 @@ src/common/scm_rev.cpp
 .vs/
 .vscode/
 
+# VS 2017 leftover
+x86/
+x64/
+
 # *nix related
 # Common convention for backup or temporary files
 *~
