@@ -142,7 +142,6 @@ public:
     InstallList(
         {{"Match", [this, size]() {
             for (u64 i = 0; i < size; ++i) {
-              printf("%lu\n", i);
               if (!Open(WithIndex("Hash", i))->Open("Match")->ValueT<bool>()) {
                 return std::make_shared<ConstContainer>(false);
               }
@@ -164,24 +163,24 @@ Romfs::Romfs(FB::FilePtr file_) : FileContainer(std::move(file_)) {
       Field<u64>("Level1Size", 0x14),
       {"Level1BlockSize",
        [this]() {
-         return std::make_shared<ConstContainer>(
-             u64(1 << file->Read<u32>(0x1C)));
+         return std::make_shared<ConstContainer>(u64(1)
+                                                 << file->Read<u32>(0x1C));
        }},
 
       Field<u64>("Level2Offset", 0x24),
       Field<u64>("Level2Size", 0x2C),
       {"Level2BlockSize",
        [this]() {
-         return std::make_shared<ConstContainer>(
-             u64(1 << file->Read<u32>(0x34)));
+         return std::make_shared<ConstContainer>(u64(1)
+                                                 << file->Read<u32>(0x34));
        }},
 
       Field<u64>("Level3Offset", 0x3C),
       Field<u64>("Level3Size", 0x44),
       {"Level3BlockSize",
        [this]() {
-         return std::make_shared<ConstContainer>(
-             u64(1 << file->Read<u32>(0x4C)));
+         return std::make_shared<ConstContainer>(u64(1)
+                                                 << file->Read<u32>(0x4C));
        }},
 
       {"Level0",
