@@ -20,7 +20,7 @@ RsaSession::RsaSession(std::shared_ptr<Session> parent_session,
     label_verified->setText(match ? tr("Signature Verified")
                                   : tr("Signature Mismatch"));
   } else {
-    label_verified->setText("Fuck");
+    label_verified->setText("Signature Unverified");
   }
 
   QHBoxLayout *layout_verified = new QHBoxLayout();
@@ -60,8 +60,6 @@ QPushButton *RsaSession::CreateButton(Session *parent,
     bool match = match_file->ValueT<bool>();
     button->setIcon(match ? *s_icon_checked : *s_icon_failed);
     button->setIcon(match ? *s_icon_checked : *s_icon_failed);
-  } else {
-    button->setText("Fuck");
   }
 
   connect(button, &QPushButton::clicked, [parent, signature, slot]() {
