@@ -11,6 +11,7 @@ set(SRCS
         common_types.h
         container.cpp
         container.h
+        cryptopp_util.h
         disk_file.cpp
         disk_file.h
         exefs.cpp

@@ -1,4 +1,5 @@
 #include "core/sha.h"
+#include "cryptopp_util.h"
 #include <cryptopp/sha.h>
 
 namespace CB {
@@ -8,14 +9,13 @@ Sha::Sha(FB::FilePtr data, FB::FilePtr hash)
   InstallList({
       {"Match",
        [this]() {
-         std::array<u8, CryptoPP::SHA256::DIGESTSIZE> hash;
+         byte_seq hash(CryptoPP::SHA256::DIGESTSIZE);
          std::size_t size = this->data->GetSize();
          auto buffer = this->data->Read(0, size);
-         CryptoPP::SHA256().CalculateDigest(hash.data(), buffer.data(), size);
+         CryptoPP::SHA256().CalculateDigest(CryptoPPBytes(hash),
+                                            CryptoPPBytes(buffer), size);
          auto hash2 = this->hash->Read(0, CryptoPP::SHA256::DIGESTSIZE);
-         return std::make_shared<ConstContainer>(
-             std::memcmp(hash.data(), hash2.data(),
-                         CryptoPP::SHA256::DIGESTSIZE) == 0);
+         return std::make_shared<ConstContainer>(hash == hash2);
        }},
   });
 }

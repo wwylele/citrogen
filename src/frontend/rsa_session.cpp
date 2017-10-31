@@ -31,11 +31,11 @@ RsaSession::RsaSession(std::shared_ptr<Session> parent_session,
   QPlainTextEdit *edit_data = new QPlainTextEdit();
   edit_data->setReadOnly(true);
   edit_data->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
-  auto signature = container->ValueT<std::vector<u8>>();
+  auto signature = container->ValueT<byte_seq>();
   u8 col = 0;
   QString text;
-  for (u8 byte : signature) {
-    text += ToHex(byte) + " ";
+  for (byte b : signature) {
+    text += ToHex(b) + " ";
     ++col;
     if (col == 16) {
       text += "\n";

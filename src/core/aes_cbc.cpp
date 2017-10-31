@@ -1,5 +1,6 @@
 #include "core/aes_cbc.h"
 #include "core/align.h"
+#include "core/cryptopp_util.h"
 #include <cryptopp/aes.h>
 #include <cryptopp/modes.h>
 
@@ -10,7 +11,7 @@ AesCbcFile::AesCbcFile(FilePtr parent, FilePtr key, FilePtr iv)
 
 std::size_t AesCbcFile::GetSize() { return parent->GetSize(); }
 
-std::vector<u8> AesCbcFile::Read(std::size_t pos, std::size_t size) {
+byte_seq AesCbcFile::Read(std::size_t pos, std::size_t size) {
   // Random access for CBC mode decryption is implemented here.
 
   // read encrypted data from aligned boundary
@@ -30,11 +31,11 @@ std::vector<u8> AesCbcFile::Read(std::size_t pos, std::size_t size) {
   if (key_data.size() != 16 || iv_data.size() != 16)
     return {};
   CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption dec;
-  dec.SetKeyWithIV(key_data.data(), 16, iv_data.data(), 16);
-  dec.ProcessData(buffer.data(), buffer.data(), buffer.size());
+  dec.SetKeyWithIV(CryptoPPBytes(key_data), 16, CryptoPPBytes(iv_data), 16);
+  dec.ProcessData(CryptoPPBytes(buffer), CryptoPPBytes(buffer), buffer.size());
 
   // truncate the buffer to the actual boundary
-  return std::vector<u8>(buffer.begin() + (pos - pos_align_down),
-                         buffer.end() - (end_align_up - end));
+  return byte_seq(buffer.begin() + (pos - pos_align_down),
+                  buffer.end() - (end_align_up - end));
 }
 } // namespace FB

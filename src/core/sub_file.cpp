@@ -7,7 +7,7 @@ SubFile::SubFile(FilePtr parent, std::size_t offset, std::size_t file_size)
 
 std::size_t SubFile::GetSize() { return file_size; }
 
-std::vector<u8> SubFile::Read(std::size_t pos, std::size_t size) {
+byte_seq SubFile::Read(std::size_t pos, std::size_t size) {
   if (pos >= file_size) {
     return {};
   }

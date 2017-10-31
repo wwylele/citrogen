@@ -11,7 +11,9 @@
 namespace CB {
 
 std::unordered_map<u32, std::size_t> signature_size{
-    {0x10003, 0x240}, {0x10004, 0x140}, {0x10005, 0x80},
+    {0x10003, 0x240},
+    {0x10004, 0x140},
+    {0x10005, 0x80},
 };
 
 class Ticket : public FileContainer {
@@ -56,11 +58,11 @@ private:
   FB::FilePtr TitleKey() {
     auto encrypted =
         std::make_shared<FB::SubFile>(file, 0x7F + main_offset, 0x10);
-    std::vector<u8> title_id; // gcc 7 bug: must separate here
+    byte_seq title_id; // gcc 7 bug: must separate here
     title_id = file->Read(0x9C + main_offset, 8);
     auto iv =
         std::make_shared<FB::MemoryFile>(title_id.begin(), title_id.end());
-    iv->resize(16, 0);
+    iv->resize(16, byte{0});
     u8 key_index = Open("KeyIndex")->ValueT<u8>();
     AESKey x, y, c;
     std::memcpy(x.data(), secrets[SB::k_sec_key3D_x].data(), 0x10);
@@ -105,9 +107,9 @@ public:
 
           {WithIndex("ContentIv", i),
            [this, i]() {
-             std::vector<u8> iv_data; // gcc 7 bug: must separate here
+             byte_seq iv_data; // gcc 7 bug: must separate here
              iv_data = file->Read(0x9C4 + main_offset + i * 0x30 + 0x4, 2);
-             iv_data.resize(16, 0);
+             iv_data.resize(16, byte{0});
              auto iv = std::make_shared<FB::MemoryFile>(iv_data.begin(),
                                                         iv_data.end());
              return std::make_shared<FileContainer>(iv);
@@ -149,10 +151,14 @@ private:
 
 Cia::Cia(FB::FilePtr file_) : FileContainer(std::move(file_)) {
   InstallList({
-      Field<u32>("HeaderSize", 0x0), Field<u16>("Type", 0x4),
-      Field<u16>("Version", 0x6), Field<u32>("CertificateChainSize", 0x8),
-      Field<u32>("TicketSize", 0xC), Field<u32>("TmdSize", 0x10),
-      Field<u32>("MetadataSize", 0x14), Field<u64>("ContentSize", 0x18),
+      Field<u32>("HeaderSize", 0x0),
+      Field<u16>("Type", 0x4),
+      Field<u16>("Version", 0x6),
+      Field<u32>("CertificateChainSize", 0x8),
+      Field<u32>("TicketSize", 0xC),
+      Field<u32>("TmdSize", 0x10),
+      Field<u32>("MetadataSize", 0x14),
+      Field<u64>("ContentSize", 0x18),
   });
 
   u64 offset = 0;

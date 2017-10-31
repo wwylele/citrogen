@@ -18,13 +18,13 @@ public:
 
   std::size_t GetSize() override { return file_size; }
 
-  std::vector<u8> Read(std::size_t pos, std::size_t size) override {
+  byte_seq Read(std::size_t pos, std::size_t size) override {
     if (pos >= file_size) {
       return {};
     }
 
     size = std::min(size, file_size - pos);
-    std::vector<u8> buffer(size);
+    byte_seq buffer(size);
 
     {
       std::lock_guard<std::mutex> lock(stream_mutex);

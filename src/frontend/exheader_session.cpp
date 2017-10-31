@@ -32,8 +32,9 @@ ExheaderSession::ExheaderSession(std::shared_ptr<Session> parent_session,
   auto BoolToStr = [this](bool v) { return v ? tr("True") : tr("False"); };
 
   table_sci->setItem(0, 0, new QTableWidgetItem(tr("Name")));
-  table_sci->setItem(0, 1, new QTableWidgetItem(QString::fromStdString(
-                               std::string(sci_name.begin(), sci_name.end()))));
+  table_sci->setItem(0, 1,
+                     new QTableWidgetItem(QString::fromStdString(
+                         std::string(sci_name.begin(), sci_name.end()))));
 
   table_sci->setItem(1, 0, new QTableWidgetItem(tr("Compressed Code")));
   table_sci->setItem(1, 1,
@@ -41,8 +42,9 @@ ExheaderSession::ExheaderSession(std::shared_ptr<Session> parent_session,
                          container->Open("IsCodeCompressed")->ValueT<bool>())));
 
   table_sci->setItem(2, 0, new QTableWidgetItem(tr("SD Application")));
-  table_sci->setItem(2, 1, new QTableWidgetItem(BoolToStr(
-                               container->Open("IsSdApp")->ValueT<bool>())));
+  table_sci->setItem(2, 1,
+                     new QTableWidgetItem(BoolToStr(
+                         container->Open("IsSdApp")->ValueT<bool>())));
 
   QVBoxLayout *main_layout = new QVBoxLayout();
   main_layout->addLayout(layout_signature);

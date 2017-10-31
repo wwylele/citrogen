@@ -28,7 +28,7 @@ bool SecretDatabase::Load(const std::string &file_name) {
     std::string name(name_size, ' ');
     std::fread(name.data(), name_size, 1, file.get());
     std::fread(&value_size, sizeof(u64), 1, file.get());
-    std::vector<u8> value(value_size);
+    byte_seq value(value_size);
     std::fread(value.data(), value_size, 1, file.get());
     database.emplace(name, value);
   }
@@ -53,15 +53,14 @@ bool SecretDatabase::Save(const std::string &file_name) const {
   return true;
 }
 
-std::vector<u8> SecretDatabase::Get(const std::string &name) const {
+byte_seq SecretDatabase::Get(const std::string &name) const {
   auto found = database.find(name);
   if (found == database.end())
     return {};
   return found->second;
 }
 
-void SecretDatabase::Set(const std::string &name,
-                         const std::vector<u8> &value) {
+void SecretDatabase::Set(const std::string &name, const byte_seq &value) {
   database[name] = value;
 }
 
@@ -78,7 +77,7 @@ std::vector<std::string> SecretDatabase::List() const {
 
 SecretContext::SecretContext() : database(g_secrets) {}
 
-std::vector<u8> SecretContext::operator[](const std::string &name) const {
+byte_seq SecretContext::operator[](const std::string &name) const {
   return database->Get(name);
 }
 

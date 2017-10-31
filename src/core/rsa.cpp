@@ -1,4 +1,5 @@
 #include "core/rsa.h"
+#include "cryptopp_util.h"
 #include <cryptopp/rsa.h>
 
 namespace CB {
@@ -19,11 +20,11 @@ Rsa::Rsa(FB::FilePtr data_, FB::FilePtr signature_, FB::FilePtr public_key_)
            }
            bool result = false;
            try {
-             result =
-                 CryptoPP::RSASS<CryptoPP::PKCS1v15, CryptoPP::SHA256>::
-                     Verifier(CryptoPP::Integer(n.data(), 0x100),
-                              CryptoPP::Integer(0x10001))
-                         .VerifyMessage(d.data(), data_len, s.data(), 0x100);
+             result = CryptoPP::RSASS<CryptoPP::PKCS1v15, CryptoPP::SHA256>::
+                          Verifier(CryptoPP::Integer(CryptoPPBytes(n), 0x100),
+                                   CryptoPP::Integer(0x10001))
+                              .VerifyMessage(CryptoPPBytes(d), data_len,
+                                             CryptoPPBytes(s), 0x100);
            } catch (...) {
            }
            return std::make_shared<ConstContainer>(result);

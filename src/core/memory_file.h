@@ -5,15 +5,15 @@
 
 namespace FB {
 
-class MemoryFile : public File, public std::vector<u8> {
+class MemoryFile : public File, public byte_seq {
 public:
-  using std::vector<u8>::vector;
+  using byte_seq::vector;
   MemoryFile() = default;
-  MemoryFile(const std::vector<u8> &);
-  MemoryFile(std::vector<u8> &&);
+  MemoryFile(const byte_seq &);
+  MemoryFile(byte_seq &&);
 
   std::size_t GetSize() override;
-  std::vector<u8> Read(std::size_t pos, std::size_t size) override;
+  byte_seq Read(std::size_t pos, std::size_t size) override;
 };
 
 } // namespace FB

@@ -182,7 +182,7 @@ void Ncch::CheckForceNoCrypto() {
   if (!Open("RomfsOffset")->ValueT<u32>())
     return;
 
-  if (RawRomfsFile()->Read(0, 4) == std::vector<u8>{'I', 'V', 'F', 'C'}) {
+  if (RawRomfsFile()->Read<magic_t>(0) == magic_t{'I', 'V', 'F', 'C'}) {
     force_no_crypto = true;
   }
 }
@@ -195,7 +195,7 @@ FB::FilePtr Ncch::KeyY() {
 FB::FilePtr Ncch::PrimaryNormalKey() {
   if (Open("IsFixedKeyCrypto")->ValueT<bool>()) {
     // TODO: system fixed key
-    return std::make_shared<FB::MemoryFile>(0x10, 0);
+    return std::make_shared<FB::MemoryFile>(0x10, byte{0});
   }
   auto key_y_buf = KeyY()->Read(0, 0x10);
   AESKey key_x, key_y, key_c;
@@ -209,7 +209,7 @@ FB::FilePtr Ncch::PrimaryNormalKey() {
 FB::FilePtr Ncch::SecondaryNormalKey() {
   if (Open("IsFixedKeyCrypto")->ValueT<bool>()) {
     // TODO: system fixed key
-    return std::make_shared<FB::MemoryFile>(0x10, 0);
+    return std::make_shared<FB::MemoryFile>(0x10, byte{0});
   }
   auto key_y_buf = KeyY()->Read(0, 0x10);
   AESKey key_x, key_y, key_c;
@@ -291,11 +291,11 @@ FB::FilePtr Ncch::CryptoIv(IvType type) {
   }
 
   u64 partition_id = Open("PartitionId")->ValueT<u64>();
-  std::array<u8, 8> partition_id_s;
+  std::array<byte, 8> partition_id_s;
   std::memcpy(partition_id_s.data(), &partition_id, 8);
   auto iv = std::make_shared<FB::MemoryFile>(16);
   std::reverse_copy(partition_id_s.begin(), partition_id_s.end(), iv->begin());
-  (*iv)[8] = (u8)type;
+  (*iv)[8] = byte{type};
   return iv;
 }
 

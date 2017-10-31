@@ -1,4 +1,5 @@
 #include "core/aes_ctr.h"
+#include "core/cryptopp_util.h"
 #include <cryptopp/aes.h>
 #include <cryptopp/modes.h>
 #include <cstdio>
@@ -9,16 +10,16 @@ AesCtrFile::AesCtrFile(FilePtr parent, FilePtr key, FilePtr iv)
 
 std::size_t AesCtrFile::GetSize() { return parent->GetSize(); }
 
-std::vector<u8> AesCtrFile::Read(std::size_t pos, std::size_t size) {
+byte_seq AesCtrFile::Read(std::size_t pos, std::size_t size) {
   auto buffer = parent->Read(pos, size);
   auto key_data = key->Read(0, 16);
   auto iv_data = iv->Read(0, 16);
   if (key_data.size() != 16 || iv_data.size() != 16)
     return {};
   CryptoPP::CTR_Mode<CryptoPP::AES>::Decryption dec;
-  dec.SetKeyWithIV(key_data.data(), 16, iv_data.data(), 16);
+  dec.SetKeyWithIV(CryptoPPBytes(key_data), 16, CryptoPPBytes(iv_data), 16);
   dec.Seek(pos);
-  dec.ProcessData(buffer.data(), buffer.data(), buffer.size());
+  dec.ProcessData(CryptoPPBytes(buffer), CryptoPPBytes(buffer), buffer.size());
   return buffer;
 }
 } // namespace FB

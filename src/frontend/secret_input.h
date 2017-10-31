@@ -16,7 +16,7 @@ public:
   ~SecretInputDialog();
 
   std::string return_name;
-  std::vector<u8> return_value;
+  byte_seq return_value;
 
 public slots:
   void accept() override;

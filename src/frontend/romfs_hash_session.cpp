@@ -8,7 +8,8 @@ RomfsHashVerifier::RomfsHashVerifier(CB::ContainerPtr container_)
 
 void RomfsHashVerifier::run() {
   CB::ContainerPtr levels[3] = {
-      container->Open("Level0"), container->Open("Level1"),
+      container->Open("Level0"),
+      container->Open("Level1"),
       container->Open("Level2"),
   };
 

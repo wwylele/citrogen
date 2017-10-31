@@ -34,6 +34,6 @@ Exheader::Exheader(FB::FilePtr file) : FileContainer(std::move(file)) {
   });
 }
 
-u8 Exheader::SciFlags() { return file->Read(0xD, 1)[0]; }
+u8 Exheader::SciFlags() { return file->Read<u8>(0xD); }
 
 } // namespace CB

@@ -8,6 +8,8 @@ template <typename T> QString ToHex(T value) {
       .toUpper();
 }
 
+template <> inline QString ToHex<byte>(byte value) { return ToHex((u8)value); }
+
 inline int DigitFromHex(QChar c) {
   if (c.isDigit())
     return c.digitValue();

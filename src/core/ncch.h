@@ -15,7 +15,7 @@ private:
   void CheckForceNoCrypto();
   bool force_no_crypto = false;
 
-  enum class IvType {
+  enum class IvType : u8 {
     Exheader = 1,
     Exefs = 2,
     Romfs = 3,

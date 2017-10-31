@@ -1,7 +1,10 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
+#include <string>
+#include <vector>
 
 #if defined(_MSC_VER)
 #include <cstdlib>
@@ -12,15 +15,18 @@
 #include <sys/endian.h>
 #endif
 
-typedef std::uint8_t u8;   ///< 8-bit unsigned byte
-typedef std::uint16_t u16; ///< 16-bit unsigned short
-typedef std::uint32_t u32; ///< 32-bit unsigned word
-typedef std::uint64_t u64; ///< 64-bit unsigned int
+using u8 = std::uint8_t;   ///< 8-bit unsigned byte
+using u16 = std::uint16_t; ///< 16-bit unsigned short
+using u32 = std::uint32_t; ///< 32-bit unsigned word
+using u64 = std::uint64_t; ///< 64-bit unsigned int
 
-typedef std::int8_t s8;   ///< 8-bit signed byte
-typedef std::int16_t s16; ///< 16-bit signed short
-typedef std::int32_t s32; ///< 32-bit signed word
-typedef std::int64_t s64; ///< 64-bit signed int
+using s8 = std::int8_t;   ///< 8-bit signed byte
+using s16 = std::int16_t; ///< 16-bit signed short
+using s32 = std::int32_t; ///< 32-bit signed word
+using s64 = std::int64_t; ///< 64-bit signed int
+
+using byte = std::byte;
+using byte_seq = std::vector<byte>;
 
 #ifdef _MSC_VER
 inline u16 swap16(u16 _data) { return _byteswap_ushort(_data); }

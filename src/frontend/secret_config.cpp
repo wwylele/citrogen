@@ -70,8 +70,8 @@ void SecretConfigDialog::onSecretSelected(const QString &name) {
   ui->editDescription->setPlainText(desc_string);
 
   QString value_str;
-  for (u8 byte : secrets->Get(std_name))
-    value_str += ToHex(byte);
+  for (byte b : secrets->Get(std_name))
+    value_str += ToHex(b);
 
   ui->editValue->setPlainText(value_str);
 }

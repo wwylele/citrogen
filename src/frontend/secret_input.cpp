@@ -34,7 +34,7 @@ void SecretInputDialog::accept() {
       temp = (u8)(digit << 4);
     } else {
       temp |= (u8)digit;
-      return_value.push_back(temp);
+      return_value.push_back(byte{temp});
     }
 
     low = !low;

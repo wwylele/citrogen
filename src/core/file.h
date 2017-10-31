@@ -20,7 +20,7 @@ public:
 
   virtual std::size_t GetSize() = 0;
 
-  virtual std::vector<u8> Read(std::size_t pos, std::size_t size) = 0;
+  virtual byte_seq Read(std::size_t pos, std::size_t size) = 0;
 
   template <typename T> T Read(std::size_t pos) {
     static_assert(std::is_trivially_copyable<T>::value,
