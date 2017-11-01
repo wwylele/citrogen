@@ -21,6 +21,8 @@ private:
     Romfs = 3,
   };
 
+  FB::FilePtr PatchedHeader();
+
   bool IsDecrypted();
   FB::FilePtr KeyY();
   FB::FilePtr PrimaryNormalKey();

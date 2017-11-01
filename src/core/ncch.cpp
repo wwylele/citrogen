@@ -4,13 +4,14 @@
 #include "core/exefs.h"
 #include "core/exheader.h"
 #include "core/memory_file.h"
+#include "core/patch_file.h"
 #include "core/romfs.h"
 #include "core/rsa.h"
 #include "core/sha.h"
 
 namespace CB {
 
-Ncch::Ncch(FB::FilePtr file) : FileContainer(std::move(file)) {
+Ncch::Ncch(FB::FilePtr file_) : FileContainer(std::move(file_)) {
   InstallList({
       Field<magic_t>("Magic", 0x100),
       Field<u32>("ContentSize", 0x104),
@@ -81,6 +82,8 @@ Ncch::Ncch(FB::FilePtr file) : FileContainer(std::move(file)) {
                   return std::make_shared<ConstContainer>(force_no_crypto);
                 }}});
 
+  FB::FilePtr signature_key;
+
   u32 exheader_hash_region_size = Open("ExheaderHashRegionSize")->ValueT<u32>();
   if (exheader_hash_region_size) {
     auto error = ExheaderError();
@@ -88,45 +91,41 @@ Ncch::Ncch(FB::FilePtr file) : FileContainer(std::move(file)) {
                     return std::make_shared<ConstContainer>(error);
                   }}});
     if (error.empty()) {
-      InstallList(
-          {{"Exheader",
-            [this]() { return std::make_shared<Exheader>(ExheaderFile()); }},
-           {"ExheaderHash",
-            [this, exheader_hash_region_size]() {
-              return std::make_shared<Sha>(
-                  std::make_shared<FB::SubFile>(ExheaderFile(), 0,
-                                                exheader_hash_region_size),
-                  std::make_shared<FB::SubFile>(this->file, 0x160, 0x20));
-            }},
-           {"Signature", [this]() {
-              return std::make_shared<Rsa>(
-                  std::make_shared<FB::SubFile>(this->file, 0x100, 0x100),
-                  std::make_shared<FB::SubFile>(this->file, 0, 0x100),
-                  Open("Exheader")
-                      ->Open("NcchSignaturePublicKey")
-                      ->ValueT<FB::FilePtr>());
-            }}});
+      InstallList({
+          {"Exheader",
+           [this]() { return std::make_shared<Exheader>(ExheaderFile()); }},
+          {"ExheaderHash",
+           [this, exheader_hash_region_size]() {
+             return std::make_shared<Sha>(
+                 std::make_shared<FB::SubFile>(ExheaderFile(), 0,
+                                               exheader_hash_region_size),
+                 std::make_shared<FB::SubFile>(this->file, 0x160, 0x20));
+           }},
+      });
+      signature_key = Open("Exheader")
+                          ->Open("NcchSignaturePublicKey")
+                          ->ValueT<FB::FilePtr>();
     } else {
-      InstallList(
-          {{"Signature", [this]() {
-              return std::make_shared<Rsa>(
-                  std::make_shared<FB::SubFile>(this->file, 0x100, 0x100),
-                  std::make_shared<FB::SubFile>(this->file, 0, 0x100),
-                  std::make_shared<FB::MemoryFile>());
-            }}});
+      signature_key = std::make_shared<FB::MemoryFile>();
     }
   } else {
-    auto signature_key = secrets[SB::k_sec_pubkey_ncsd_cfa];
-    InstallList({
-        {"Signature",
-         [this, signature_key]() {
-           return std::make_shared<Rsa>(
-               std::make_shared<FB::SubFile>(this->file, 0x100, 0x100),
-               std::make_shared<FB::SubFile>(this->file, 0, 0x100),
-               std::make_shared<FB::MemoryFile>(signature_key));
-         }},
-    });
+    signature_key =
+        std::make_shared<FB::MemoryFile>(secrets[SB::k_sec_pubkey_ncsd_cfa]);
   }
+
+  auto header = std::make_shared<FB::SubFile>(file, 0x100, 0x100);
+  auto patched_header = PatchedHeader();
+  auto signature = std::make_shared<FB::SubFile>(file, 0, 0x100);
+
+  InstallList(
+      {{"Signature",
+        [header, signature, signature_key]() {
+          return std::make_shared<Rsa>(header, signature, signature_key);
+        }},
+       {"SignaturePatched", [patched_header, signature, signature_key]() {
+          return std::make_shared<Rsa>(patched_header, signature,
+                                       signature_key);
+        }}});
 
   u32 exefs_size = Open("ExefsOffset")->ValueT<u32>();
   if (exefs_size) {
@@ -173,6 +172,14 @@ Ncch::Ncch(FB::FilePtr file) : FileContainer(std::move(file)) {
       });
     }
   }
+}
+
+FB::FilePtr Ncch::PatchedHeader() {
+  auto header = std::make_shared<FB::SubFile>(file, 0x100, 0x100);
+  auto content_flag2 = header->Read(0x8F, 1);
+  auto patch = std::make_shared<FB::MemoryFile>(content_flag2);
+  (*patch)[0] &= ~byte{0x4};
+  return std::make_shared<FB::PatchFile>(header, patch, 0x8F);
 }
 
 void Ncch::CheckForceNoCrypto() {
