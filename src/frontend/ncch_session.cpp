@@ -23,6 +23,9 @@ NcchSession::NcchSession(std::shared_ptr<Session> parent_session,
 
   QPushButton *button_signature =
       RsaSession::CreateButton(this, container->Open("Signature"));
+  QPushButton *button_signature_patched =
+      RsaSession::CreateButton(this, container->Open("SignaturePatched"));
+  button_signature_patched->setText(tr("Signature(patched)"));
 
   u64 partition_id = container->Open("PartitionId")->ValueT<u64>();
   QPushButton *button_partition_id =
@@ -123,6 +126,7 @@ NcchSession::NcchSession(std::shared_ptr<Session> parent_session,
 
   QVBoxLayout *layout_metadata = new QVBoxLayout();
   layout_metadata->addWidget(button_signature);
+  layout_metadata->addWidget(button_signature_patched);
   layout_metadata->addWidget(button_partition_id);
   layout_metadata->addWidget(button_program_id);
   layout_metadata->addWidget(button_product_code);
