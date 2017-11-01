@@ -26,6 +26,8 @@ set(SRCS
         ncch.h
         ncsd.cpp
         ncsd.h
+        patch_file.cpp
+        patch_file.h
         romfs.cpp
         romfs.h
         rsa.cpp

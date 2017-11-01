@@ -28,6 +28,11 @@ using s64 = std::int64_t; ///< 64-bit signed int
 using byte = std::byte;
 using byte_seq = std::vector<byte>;
 
+inline byte_seq &operator+=(byte_seq &left, const byte_seq &right) {
+  left.insert(left.end(), right.begin(), right.end());
+  return left;
+}
+
 #ifdef _MSC_VER
 inline u16 swap16(u16 _data) { return _byteswap_ushort(_data); }
 inline u32 swap32(u32 _data) { return _byteswap_ulong(_data); }
