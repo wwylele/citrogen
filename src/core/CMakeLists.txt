@@ -7,6 +7,8 @@ set(SRCS
         container_backend/cia.h
         container_backend/container.cpp
         container_backend/container.h
+        container_backend/disk_directory.cpp
+        container_backend/disk_directory.h
         container_backend/exefs.cpp
         container_backend/exefs.h
         container_backend/exheader.cpp
@@ -49,4 +51,7 @@ create_directory_groups(${SRCS})
 add_library(core STATIC ${SRCS})
 target_link_libraries(core PRIVATE cryptopp)
 target_link_libraries(core PRIVATE ${PLATFORM_LIBRARIES} Threads::Threads)
+if (CMAKE_COMPILER_IS_GNUCC)
+    target_link_libraries(core PRIVATE stdc++fs)
+endif()
 
