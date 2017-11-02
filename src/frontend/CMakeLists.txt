@@ -4,45 +4,46 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake-modules)
 
 set(SRCS
-        cia_session.cpp
-        cia_session.h
-        exheader_session.cpp
-        exheader_session.h
+
         format_detect.cpp
         format_detect.h
         main.cpp
         main.h
-        ncch_session.cpp
-        ncch_session.h
-        ncsd_session.cpp
-        ncsd_session.h
-        romfs_hash_session.cpp
-        romfs_hash_session.h
-        romfs_session.cpp
-        romfs_session.h
-        rsa_session.cpp
-        rsa_session.h
-        secret_config.cpp
-        secret_config.h
-        secret_import.cpp
-        secret_import.h
-        secret_input.cpp
-        secret_input.h
-        session.cpp
-        session.h
-        sha_session.cpp
-        sha_session.h
-        smdh_session.cpp
-        smdh_session.h
+        secret/secret_config.cpp
+        secret/secret_config.h
+        secret/secret_import.cpp
+        secret/secret_import.h
+        secret/secret_input.cpp
+        secret/secret_input.h
+        session/cia_session.cpp
+        session/cia_session.h
+        session/exheader_session.cpp
+        session/exheader_session.h
+        session/ncch_session.cpp
+        session/ncch_session.h
+        session/ncsd_session.cpp
+        session/ncsd_session.h
+        session/romfs_hash_session.cpp
+        session/romfs_hash_session.h
+        session/romfs_session.cpp
+        session/romfs_session.h
+        session/rsa_session.cpp
+        session/rsa_session.h
+        session/session.cpp
+        session/session.h
+        session/sha_session.cpp
+        session/sha_session.h
+        session/smdh_session.cpp
+        session/smdh_session.h
         tab_widget.cpp
         tab_widget.h
         util.h
         )
 
 set(UIS
-        secret_config.ui
-        secret_import.ui
-        secret_input.ui
+        secret/secret_config.ui
+        secret/secret_import.ui
+        secret/secret_input.ui
         )
 
 qt5_wrap_ui(UI_HDRS ${UIS})

@@ -1,5 +1,5 @@
 #include "frontend/tab_widget.h"
-#include "frontend/ncsd_session.h"
+#include "session/ncsd_session.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDrag>

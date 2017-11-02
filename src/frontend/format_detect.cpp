@@ -1,10 +1,10 @@
 #include "frontend/format_detect.h"
-#include "core/cia.h"
-#include "core/ncch.h"
-#include "core/ncsd.h"
-#include "frontend/cia_session.h"
-#include "frontend/ncch_session.h"
-#include "frontend/ncsd_session.h"
+#include "core/container_backend/cia.h"
+#include "core/container_backend/ncch.h"
+#include "core/container_backend/ncsd.h"
+#include "session/cia_session.h"
+#include "session/ncch_session.h"
+#include "session/ncsd_session.h"
 
 std::shared_ptr<Session> TryCreateSession(FB::FilePtr file, const QString &name,
                                           std::shared_ptr<Session> parent) {

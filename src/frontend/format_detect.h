@@ -1,6 +1,6 @@
 #pragma once
-#include "core/file.h"
-#include "frontend/session.h"
+#include "core/file_backend/file.h"
+#include "session/session.h"
 
 std::shared_ptr<Session>
 TryCreateSession(FB::FilePtr file, const QString &name,

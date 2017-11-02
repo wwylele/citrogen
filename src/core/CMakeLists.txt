@@ -1,45 +1,47 @@
 set(SRCS
-        aes_cbc.cpp
-        aes_cbc.h
-        aes_ctr.cpp
-        aes_ctr.h
         aes_key.cpp
         aes_key.h
         align.h
-        cia.cpp
-        cia.h
         common_types.h
-        container.cpp
-        container.h
+        container_backend/cia.cpp
+        container_backend/cia.h
+        container_backend/container.cpp
+        container_backend/container.h
+        container_backend/exefs.cpp
+        container_backend/exefs.h
+        container_backend/exheader.cpp
+        container_backend/exheader.h
+        container_backend/romfs.cpp
+        container_backend/romfs.h
+        container_backend/rsa.cpp
+        container_backend/rsa.h
+        container_backend/sha.cpp
+        container_backend/sha.h
+        container_backend/smdh.cpp
+        container_backend/smdh.h
+        container_backend/ncch.cpp
+        container_backend/ncch.h
+        container_backend/ncsd.cpp
+        container_backend/ncsd.h
         cryptopp_util.h
-        disk_file.cpp
-        disk_file.h
-        exefs.cpp
-        exefs.h
-        exheader.cpp
-        exheader.h
-        file.cpp
-        file.h
-        memory_file.cpp
-        memory_file.h
-        ncch.cpp
-        ncch.h
-        ncsd.cpp
-        ncsd.h
-        patch_file.cpp
-        patch_file.h
-        romfs.cpp
-        romfs.h
-        rsa.cpp
-        rsa.h
-        secret_database.cpp
-        secret_database.h
-        sha.cpp
-        sha.h
-        smdh.cpp
-        smdh.h
-        sub_file.cpp
-        sub_file.h
+        file_backend/aes_cbc.cpp
+        file_backend/aes_cbc.h
+        file_backend/aes_ctr.cpp
+        file_backend/aes_ctr.h
+        file_backend/disk_file.cpp
+        file_backend/disk_file.h
+        file_backend/file.cpp
+        file_backend/file.h
+        file_backend/memory_file.cpp
+        file_backend/memory_file.h
+        file_backend/patch_file.cpp
+        file_backend/patch_file.h
+        file_backend/sub_file.cpp
+        file_backend/sub_file.h
+        secret_backend/bootrom.cpp
+        secret_backend/bootrom.h
+        secret_backend/secret_database.cpp
+        secret_backend/secret_database.h
         )
 
 

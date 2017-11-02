@@ -1,6 +1,6 @@
 #pragma once
 
-#include "frontend/session.h"
+#include "session/session.h"
 #include <QTabBar>
 #include <QTabWidget>
 #include <memory>
