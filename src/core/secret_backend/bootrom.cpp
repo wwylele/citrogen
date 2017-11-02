@@ -5,7 +5,7 @@ namespace SB {
 
 SecretDatabase FromBoot9(FB::FilePtr file) {
   SecretDatabase secrets;
-  secrets.Set(k_sec_key25_x, file->Read(0xD9D0, 0x10));
+  secrets.Set(k_sec_key2C_x, file->Read(0xD9D0, 0x10));
   return secrets;
 }
 

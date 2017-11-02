@@ -1,4 +1,4 @@
-#include "romfs_hash_session.h"
+#include "frontend/session/romfs_hash_session.h"
 #include "frontend/util.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>

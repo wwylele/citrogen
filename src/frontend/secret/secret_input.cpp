@@ -1,6 +1,6 @@
-#include "secret_input.h"
+#include "frontend/secret/secret_input.h"
+#include "frontend/secret/secret_config.h"
 #include "frontend/util.h"
-#include "secret_config.h"
 #include "ui_secret_input.h"
 #include <algorithm>
 #include <list>

@@ -3,8 +3,8 @@
 #include "core/file_backend/disk_file.h"
 #include "core/secret_backend/secret_database.h"
 #include "frontend/format_detect.h"
+#include "frontend/secret/secret_config.h"
 #include "frontend/tab_widget.h"
-#include "secret/secret_config.h"
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardPaths>

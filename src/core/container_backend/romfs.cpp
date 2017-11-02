@@ -1,6 +1,6 @@
-#include "romfs.h"
+#include "core/container_backend/romfs.h"
 #include "core/align.h"
-#include "sha.h"
+#include "core/container_backend/sha.h"
 
 namespace CB {
 

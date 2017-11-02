@@ -1,6 +1,6 @@
-#include "smdh_session.h"
+#include "frontend/session/smdh_session.h"
+#include "frontend/session/sha_session.h"
 #include "frontend/util.h"
-#include "sha_session.h"
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QIcon>

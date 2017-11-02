@@ -1,4 +1,4 @@
-#include "romfs_session.h"
+#include "frontend/session/romfs_session.h"
 #include "frontend/format_detect.h"
 #include "frontend/util.h"
 #include <QFileDialog>

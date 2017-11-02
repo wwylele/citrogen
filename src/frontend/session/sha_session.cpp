@@ -1,4 +1,4 @@
-#include "sha_session.h"
+#include "frontend/session/sha_session.h"
 #include "frontend/util.h"
 #include <QHBoxLayout>
 #include <QLabel>

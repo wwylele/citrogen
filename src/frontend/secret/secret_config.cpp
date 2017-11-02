@@ -1,10 +1,14 @@
-#include "secret_config.h"
+#include "frontend/secret/secret_config.h"
+#include "core/file_backend/disk_file.h"
 #include "core/secret_backend/bootrom.h"
 #include "core/secret_backend/secret_database.h"
+#include "frontend/secret/secret_import.h"
+#include "frontend/secret/secret_input.h"
 #include "frontend/util.h"
-#include "secret_input.h"
 #include "ui_secret_config.h"
+#include <QFileDialog>
 #include <QMenu>
+#include <QMessageBox>
 
 std::unordered_map<std::string, QString> SecretConfigDialog::secret_desc;
 
@@ -46,6 +50,38 @@ SecretConfigDialog::SecretConfigDialog(
   QMenu *menu = new QMenu();
   connect(menu->addAction(tr("Manual Input...")), &QAction::triggered, this,
           &SecretConfigDialog::onManualInputSecret);
+
+  auto AddSecretProvider = [this,
+                            menu](const QString &name,
+                                  SB::SecretDatabase (*provider)(FB::FilePtr)) {
+    connect(menu->addAction(name), &QAction::triggered, [this, provider]() {
+      QString filename = QFileDialog::getOpenFileName(
+          this, tr("Open"), QString(), tr("All files (*.*)"));
+      if (filename.isEmpty()) {
+        return;
+      }
+      auto file = FB::OpenDiskFile(filename.toStdString());
+
+      if (!file) {
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Failed to open the file!"));
+        return;
+      }
+
+      SecretImportDialog dialog(provider(file));
+      if (dialog.exec() == QDialog::Rejected)
+        return;
+
+      for (const auto &name : dialog.secret_import.List()) {
+        secrets->Set(name, dialog.secret_import.Get(name));
+      }
+      updateList();
+    });
+  };
+
+  AddSecretProvider("boot9", SB::FromBoot9);
+  AddSecretProvider("boot11", SB::FromBoot11);
+
   ui->buttonImport->setMenu(menu);
 
   connect(ui->listSecret, &QListWidget::currentTextChanged, this,

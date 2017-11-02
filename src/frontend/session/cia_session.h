@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/container_backend/container.h"
-#include "session.h"
+#include "frontend/session/session.h"
 
 class CiaSession : public Session {
   Q_OBJECT

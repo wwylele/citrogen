@@ -1,4 +1,4 @@
-#include "session.h"
+#include "frontend/session/session.h"
 #include <QDebug>
 #include <QFontDatabase>
 #include <QHBoxLayout>

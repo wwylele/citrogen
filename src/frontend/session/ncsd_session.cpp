@@ -1,7 +1,7 @@
-#include "ncsd_session.h"
+#include "frontend/session/ncsd_session.h"
+#include "frontend/session/ncch_session.h"
+#include "frontend/session/rsa_session.h"
 #include "frontend/util.h"
-#include "ncch_session.h"
-#include "rsa_session.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "session/session.h"
+#include "frontend/session/session.h"
 #include <QMainWindow>
 
 class MainWindow : public QMainWindow {
