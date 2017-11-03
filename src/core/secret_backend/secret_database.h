@@ -41,6 +41,8 @@ const std::string k_sec_key3D_y[6] = {
     "AES Slot 0x3D Key Y0", "AES Slot 0x3D Key Y1", "AES Slot 0x3D Key Y2",
     "AES Slot 0x3D Key Y3", "AES Slot 0x3D Key Y4", "AES Slot 0x3D Key Y5",
 };
+const std::string k_sec_key34_x = "AES Slot 0x34 Key X";
+const std::string k_sec_key34_y = "AES Slot 0x34 Key Y";
 const std::string k_sec_key2C_x = "AES Slot 0x2C Key X";
 const std::string k_sec_key25_x = "AES Slot 0x25 Key X";
 const std::string k_sec_key18_x = "AES Slot 0x18 Key X";

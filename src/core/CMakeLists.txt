@@ -42,6 +42,8 @@ set(SRCS
         file_backend/sub_file.h
         secret_backend/bootrom.cpp
         secret_backend/bootrom.h
+        secret_backend/movable_sed.cpp
+        secret_backend/movable_sed.h
         secret_backend/secret_database.cpp
         secret_backend/secret_database.h
         )

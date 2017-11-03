@@ -1,6 +1,7 @@
 #include "frontend/secret/secret_config.h"
 #include "core/file_backend/disk_file.h"
 #include "core/secret_backend/bootrom.h"
+#include "core/secret_backend/movable_sed.h"
 #include "core/secret_backend/secret_database.h"
 #include "frontend/secret/secret_import.h"
 #include "frontend/secret/secret_input.h"
@@ -18,34 +19,42 @@ SecretConfigDialog::SecretConfigDialog(
       ui(new Ui::SecretConfigDialog) {
   ui->setupUi(this);
 
-  // HACK
-  secret_desc = {
-      {SB::k_sec_key2C_x,
-       tr("The primary encryption key for NCCH. All encrypted NCCH files, "
-          "except "
-          "for ones using fixed-key crypto, need this key to decrypt.")},
-      {SB::k_sec_key25_x, tr("The secondary encryption key for 7.x (Secure 2) "
-                             "NCCH. Many encrypted "
-                             "NCCH files need this key to decrypt.")},
-      {SB::k_sec_key18_x,
-       tr("The secondary encryption key for Secure 3 NCCH. Some encrypted NCCH "
-          "files need this key to decrypt.")},
-      {SB::k_sec_key1B_x,
-       tr("The secondary encryption key for Secure 4 NCCH. Some encrypted NCCH "
-          "files need this key to decrypt.")},
-      {SB::k_sec_key3D_x,
-       tr("The primary key for decrypting ticket title key.")},
-      {SB::k_sec_key3D_y[0], tr("The secondary key for decrypting ticket title "
-                                "key used for eshop applications.")},
-      {SB::k_sec_key3D_y[1], tr("The secondary key for decrypting ticket title "
-                                "key used for system applications.")},
-      {SB::k_sec_aes_const, tr("The core secret constant of AES key scrambler "
-                               "engine. Needed for most AES encryption.")},
-      {SB::k_sec_pubkey_exheader,
-       tr("The public key needed for verifying ExHeader signature.")},
-      {SB::k_sec_pubkey_ncsd_cfa,
-       tr("The public key needed for verifying NCSD and CFA signature.")},
-  };
+  if (secret_desc.empty())
+    secret_desc = {
+        {SB::k_sec_key2C_x,
+         tr("The primary encryption key for NCCH. All encrypted NCCH files, "
+            "except for ones using fixed-key crypto, need this key to "
+            "decrypt.")},
+        {SB::k_sec_key25_x,
+         tr("The secondary encryption key for 7.x (Secure 2) "
+            "NCCH. Many encrypted  NCCH files need this key to decrypt.")},
+        {SB::k_sec_key34_x, tr("The common encryption key for SD files. "
+                               "Decrypting SD files needs this.")},
+        {SB::k_sec_key34_y,
+         tr("The console-unique encryption key for SD files. "
+            "Decrypting SD files needs this.")},
+        {SB::k_sec_key18_x,
+         tr("The secondary encryption key for Secure 3 "
+            "NCCH. Some encrypted NCCH files need this key to decrypt.")},
+        {SB::k_sec_key1B_x,
+         tr("The secondary encryption key for Secure 4 "
+            "NCCH. Some encrypted NCCH files need this key to decrypt.")},
+        {SB::k_sec_key3D_x,
+         tr("The primary key for decrypting ticket title key.")},
+        {SB::k_sec_key3D_y[0],
+         tr("The secondary key for decrypting ticket title "
+            "key used for eshop applications.")},
+        {SB::k_sec_key3D_y[1],
+         tr("The secondary key for decrypting ticket title "
+            "key used for system applications.")},
+        {SB::k_sec_aes_const,
+         tr("The core secret constant of AES key scrambler "
+            "engine. Needed for most AES encryption.")},
+        {SB::k_sec_pubkey_exheader,
+         tr("The public key needed for verifying ExHeader signature.")},
+        {SB::k_sec_pubkey_ncsd_cfa,
+         tr("The public key needed for verifying NCSD and CFA signature.")},
+    };
 
   QMenu *menu = new QMenu();
   connect(menu->addAction(tr("Manual Input...")), &QAction::triggered, this,
@@ -81,6 +90,7 @@ SecretConfigDialog::SecretConfigDialog(
 
   AddSecretProvider("boot9", SB::FromBoot9);
   AddSecretProvider("boot11", SB::FromBoot11);
+  AddSecretProvider("movable.sed", SB::FromMovableSed);
 
   ui->buttonImport->setMenu(menu);
 
