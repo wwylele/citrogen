@@ -10,6 +10,7 @@ public:
   MainWindow();
 public slots:
   void onOpen();
+  void onOpenSd();
   void onManageSecrets();
 signals:
   void openNewSession(std::shared_ptr<Session> session);

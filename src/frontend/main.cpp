@@ -1,9 +1,11 @@
-
 #include "frontend/main.h"
+#include "core/container_backend/disk_directory.h"
+#include "core/container_backend/sd_protected.h"
 #include "core/file_backend/disk_file.h"
 #include "core/secret_backend/secret_database.h"
 #include "frontend/format_detect.h"
 #include "frontend/secret/secret_config.h"
+#include "frontend/session/file_hierarchy_session.h"
 #include "frontend/tab_widget.h"
 #include <QMenu>
 #include <QMessageBox>
@@ -20,6 +22,8 @@ MainWindow::MainWindow() {
   auto menu_file = menuBar()->addMenu(tr("&File"));
   connect(menu_file->addAction(tr("&Open...")), &QAction::triggered, this,
           &MainWindow::onOpen);
+  connect(menu_file->addAction(tr("&Open SD directory...")),
+          &QAction::triggered, this, &MainWindow::onOpenSd);
 
   connect(menu_file->addAction(tr("Manage Secrets...")), &QAction::triggered,
           this, &MainWindow::onManageSecrets);
@@ -63,6 +67,29 @@ void MainWindow::onOpen() {
 
   QMessageBox::critical(this, tr("Error"),
                         tr("Failed to detect the file format!"));
+}
+
+void MainWindow::onOpenSd() {
+  QString dir = QFileDialog::getExistingDirectory(
+      this, tr("Open SD Directory"), QString(), QFileDialog::ShowDirsOnly);
+  if (dir.isEmpty()) {
+    return;
+  }
+
+  auto sd = std::make_shared<CB::SdProtected>(
+      std::make_shared<CB::DiskDirectory>(dir.toStdString()));
+
+  auto root = sd->Open("Root");
+
+  if (!root) {
+    QMessageBox::critical(this, tr("Error"),
+                          tr("Failed to open the SD directory!"));
+    return;
+  }
+
+  auto session = std::make_shared<FileHierarchySession>(nullptr, "SD", root);
+
+  openNewSession(session);
 }
 
 #ifdef main

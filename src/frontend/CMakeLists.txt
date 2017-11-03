@@ -25,8 +25,8 @@ set(SRCS
         session/ncsd_session.h
         session/romfs_hash_session.cpp
         session/romfs_hash_session.h
-        session/romfs_session.cpp
-        session/romfs_session.h
+        session/file_hierarchy_session.cpp
+        session/file_hierarchy_session.h
         session/rsa_session.cpp
         session/rsa_session.h
         session/session.cpp

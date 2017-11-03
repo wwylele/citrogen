@@ -4,33 +4,33 @@
 #include "frontend/session/session.h"
 #include <QAbstractItemModel>
 
-class RomfsTreeItem : public QObject {
+class FileHierarchyItem : public QObject {
   Q_OBJECT
 
 public:
-  RomfsTreeItem(CB::ContainerPtr container_, std::size_t row_ = 0,
-                const QString &text_ = tr("(root)"),
-                RomfsTreeItem *parent_ = nullptr);
+  FileHierarchyItem(CB::ContainerPtr container_, std::size_t row_ = 0,
+                    const QString &text_ = tr("(root)"),
+                    FileHierarchyItem *parent_ = nullptr);
   bool isExpandable() const;
   void expand();
-  const std::vector<std::unique_ptr<RomfsTreeItem>> &getChildren() const;
+  const std::vector<std::unique_ptr<FileHierarchyItem>> &getChildren() const;
   bool isDirectory() const;
   CB::ContainerPtr getContainer();
   const std::size_t row;
   const QString text;
-  RomfsTreeItem *const parent;
+  FileHierarchyItem *const parent;
 
 private:
   CB::ContainerPtr container;
   bool expanded = false;
-  std::vector<std::unique_ptr<RomfsTreeItem>> children;
+  std::vector<std::unique_ptr<FileHierarchyItem>> children;
 };
 
-class RomfsTreeModel : public QAbstractItemModel {
+class FileHierarchyModel : public QAbstractItemModel {
   Q_OBJECT
 
 public:
-  RomfsTreeModel(CB::ContainerPtr container, QObject *parent = nullptr);
+  FileHierarchyModel(CB::ContainerPtr container, QObject *parent = nullptr);
 
   QVariant data(const QModelIndex &index, int role) const override;
   QModelIndex index(int row, int column,
@@ -45,16 +45,16 @@ protected:
   void fetchMore(const QModelIndex &parent) override;
 
 private:
-  RomfsTreeItem root;
+  FileHierarchyItem root;
 };
 
 class QTreeView;
 
-class RomfsSession : public Session {
+class FileHierarchySession : public Session {
   Q_OBJECT
 public:
-  RomfsSession(std::shared_ptr<Session> parent_session, const QString &name,
-               CB::ContainerPtr container_);
+  FileHierarchySession(std::shared_ptr<Session> parent_session,
+                       const QString &name, CB::ContainerPtr container_);
 
 private slots:
   void onTreeContextMenu(const QPoint &point);

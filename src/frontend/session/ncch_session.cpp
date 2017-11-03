@@ -1,7 +1,7 @@
 #include "frontend/session/ncch_session.h"
 #include "frontend/session/exheader_session.h"
+#include "frontend/session/file_hierarchy_session.h"
 #include "frontend/session/romfs_hash_session.h"
-#include "frontend/session/romfs_session.h"
 #include "frontend/session/rsa_session.h"
 #include "frontend/session/sha_session.h"
 #include "frontend/session/smdh_session.h"
@@ -231,7 +231,7 @@ void NcchSession::openExheader() {
 
 void NcchSession::openRomfs() {
   openChildSession("romfs", [this]() {
-    return std::make_shared<RomfsSession>(
+    return std::make_shared<FileHierarchySession>(
         shared_from_this(), tr("RomFS"),
         container->Open("Romfs")->Open("Level3")->Open("."));
   });
