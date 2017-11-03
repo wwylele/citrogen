@@ -19,6 +19,8 @@ set(SRCS
         container_backend/rsa.h
         container_backend/sha.cpp
         container_backend/sha.h
+        container_backend/sd_protected.cpp
+        container_backend/sd_protected.h
         container_backend/smdh.cpp
         container_backend/smdh.h
         container_backend/ncch.cpp
@@ -46,6 +48,7 @@ set(SRCS
         secret_backend/movable_sed.h
         secret_backend/secret_database.cpp
         secret_backend/secret_database.h
+        string_util.h
         )
 
 
