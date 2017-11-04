@@ -48,6 +48,8 @@ set(SRCS
         secret_backend/movable_sed.h
         secret_backend/secret_database.cpp
         secret_backend/secret_database.h
+        secret_backend/seeddb.cpp
+        secret_backend/seeddb.h
         string_util.h
         )
 

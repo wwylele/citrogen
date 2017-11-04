@@ -3,6 +3,7 @@
 #include "core/container_backend/sd_protected.h"
 #include "core/file_backend/disk_file.h"
 #include "core/secret_backend/secret_database.h"
+#include "core/secret_backend/seeddb.h"
 #include "frontend/format_detect.h"
 #include "frontend/secret/secret_config.h"
 #include "frontend/session/file_hierarchy_session.h"
@@ -105,6 +106,8 @@ int main(int argc, char *argv[]) {
       QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
   appdata.mkpath(".");
   SB::Init(QFileInfo(appdata, "secret").absoluteFilePath().toStdString());
+  SB::g_seeddb.Load(
+      QFileInfo(appdata, "seeddb.bin").absoluteFilePath().toStdString());
 
   MainWindow main_window;
 

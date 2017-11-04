@@ -3,6 +3,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -31,6 +32,12 @@ using byte_seq = std::vector<byte>;
 inline byte_seq &operator+=(byte_seq &left, const byte_seq &right) {
   left.insert(left.end(), right.begin(), right.end());
   return left;
+}
+
+template <typename T> byte_seq ToByteSeq(const T &value) {
+  byte_seq result(sizeof(T));
+  std::memcpy(result.data(), &value, sizeof(T));
+  return result;
 }
 
 #ifdef _MSC_VER

@@ -5,9 +5,12 @@
 #include "core/container_backend/romfs.h"
 #include "core/container_backend/rsa.h"
 #include "core/container_backend/sha.h"
+#include "core/cryptopp_util.h"
 #include "core/file_backend/aes_ctr.h"
 #include "core/file_backend/memory_file.h"
 #include "core/file_backend/patch_file.h"
+#include "core/secret_backend/seeddb.h"
+#include <cryptopp/sha.h>
 
 namespace CB {
 
@@ -18,6 +21,7 @@ Ncch::Ncch(FB::FilePtr file_) : FileContainer(std::move(file_)) {
       Field<u64>("PartitionId", 0x108),
       Field<u16>("MakerCode", 0x110),
       Field<u16>("Version", 0x112),
+      Field<u32>("SeedVerifier", 0x114),
 
       Field<u64>("ProgramId", 0x118),
 
@@ -75,6 +79,8 @@ Ncch::Ncch(FB::FilePtr file_) : FileContainer(std::move(file_)) {
       Field<u32>("RomfsHashRegionSize", 0x1B8),
 
   });
+
+  InitSeed();
 
   CheckForceNoCrypto();
 
@@ -182,6 +188,35 @@ FB::FilePtr Ncch::PatchedHeader() {
   return std::make_shared<FB::PatchFile>(header, patch, 0x8F);
 }
 
+void Ncch::InitSeed() {
+  if (!Open("IsSeedCrypto")->ValueT<bool>()) {
+    seed_status = SeedStatus::NoNeed;
+    return;
+  }
+
+  u64 program_id = Open("ProgramId")->ValueT<u64>();
+  byte_seq seed = SB::g_seeddb.Get(program_id);
+  if (seed.size() != 0x10) {
+    seed_status = SeedStatus::NotFound;
+    return;
+  }
+
+  byte_seq hash_block = seed, hash(CryptoPP::SHA256::DIGESTSIZE);
+  hash_block += ToByteSeq(program_id);
+  CryptoPP::SHA256().CalculateDigest(
+      CryptoPPBytes(hash), CryptoPPBytes(hash_block), hash_block.size());
+  hash.resize(4);
+  u32 seed_verifier = Open("SeedVerifier")->ValueT<u32>();
+
+  if (hash != ToByteSeq(seed_verifier)) {
+    seed_status = SeedStatus::NotCorrect;
+    return;
+  }
+
+  seed_status = SeedStatus::Found;
+  this->seed = seed;
+}
+
 void Ncch::CheckForceNoCrypto() {
   if (Open("IsNoCrypto")->ValueT<bool>())
     return;
@@ -196,7 +231,6 @@ void Ncch::CheckForceNoCrypto() {
 
 FB::FilePtr Ncch::KeyY() {
   return std::make_shared<FB::SubFile>(file, 0, 0x10);
-  // TODO Seed crypto
 }
 
 FB::FilePtr Ncch::PrimaryNormalKey() {
@@ -219,6 +253,16 @@ FB::FilePtr Ncch::SecondaryNormalKey() {
     return std::make_shared<FB::MemoryFile>(0x10, byte{0});
   }
   auto key_y_buf = KeyY()->Read(0, 0x10);
+
+  if (seed_status == SeedStatus::Found) {
+    key_y_buf += seed;
+    byte_seq hash(CryptoPP::SHA256::DIGESTSIZE);
+    CryptoPP::SHA256().CalculateDigest(
+        CryptoPPBytes(hash), CryptoPPBytes(key_y_buf), key_y_buf.size());
+    key_y_buf = hash;
+    key_y_buf.resize(0x10);
+  }
+
   AESKey key_x, key_y, key_c;
   std::memcpy(key_y.data(), key_y_buf.data(), 0x10);
   std::memcpy(key_c.data(), secrets[SB::k_sec_aes_const].data(), 0x10);
@@ -262,6 +306,14 @@ std::string Ncch::SecondaryNormalKeyError() {
     // TODO: system fixed key
     return "";
   }
+
+  switch (seed_status) {
+  case SeedStatus::NotCorrect:
+    return "Seed Not Correct";
+  case SeedStatus::NotFound:
+    return "Seed Not Found";
+  }
+
   if (secrets[SB::k_sec_aes_const].size() != 16)
     return SB::k_sec_aes_const;
   switch (Open("CryptoMethod")->ValueT<u8>()) {

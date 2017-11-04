@@ -12,6 +12,14 @@ public:
 private:
   SB::SecretContext secrets;
 
+  enum class SeedStatus {
+    NoNeed,
+    NotFound,
+    NotCorrect,
+    Found,
+  } seed_status;
+  byte_seq seed;
+
   void CheckForceNoCrypto();
   bool force_no_crypto = false;
 
@@ -24,6 +32,7 @@ private:
   FB::FilePtr PatchedHeader();
 
   bool IsDecrypted();
+  void InitSeed();
   FB::FilePtr KeyY();
   FB::FilePtr PrimaryNormalKey();
   FB::FilePtr SecondaryNormalKey();
