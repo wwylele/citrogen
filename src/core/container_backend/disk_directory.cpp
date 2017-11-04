@@ -6,6 +6,11 @@
 namespace stdfs {
 using namespace std::experimental::filesystem;
 }
+#elif _MSC_VER
+#include <filesystem>
+namespace stdfs {
+using namespace std::experimental::filesystem::v1;
+}
 #else
 #include <filesystem>
 namespace stdfs {
